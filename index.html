@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>施設詳細ステータス仕様 — ご確認資料</title>
+<style>
+  :root {
+    --ink: #24242a; --sub: #5d5d66; --line: #e3e1dc; --bg: #ffffff; --paper: #faf9f6;
+    --brand: #6b1f3c; --a: #5b6b8c; --b: #d9801a; --c: #2f9a5f; --warn: #c0392b;
+    --ok-bg: #eef7f1; --ng-bg: #fdf0ee; --mid-bg: #fdf6e9;
+    --s10: #6b7280; --s20: #2563eb; --s21: #1e3a8a; --s30: #2f9a5f; --s31: #14532d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.8;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 64px; background: var(--bg); }
+  header.doc { border-bottom: 3px solid var(--brand); padding-bottom: 14px; margin-bottom: 28px; }
+  .kicker { color: var(--brand); font-weight: 700; font-size: 13px; letter-spacing: .04em; }
+  h1 { font-size: 26px; line-height: 1.45; margin: 6px 0 8px; }
+  .meta { color: var(--sub); font-size: 13px; }
+  h2 { font-size: 20px; margin: 44px 0 14px; padding-left: 12px; border-left: 5px solid var(--brand); }
+  h3 { font-size: 17px; margin: 28px 0 10px; }
+  p { margin: 8px 0; }
+  .tbl { width: 100%; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; }
+  th { background: #f3f1ec; font-weight: 700; }
+  td.c, th.c { text-align: center; }
+  .lead { background: #f7f3f5; border: 1px solid #ead9e0; border-radius: 8px; padding: 14px 18px; }
+  .note { color: var(--sub); font-size: 13px; }
+  .ok { background: var(--ok-bg); } .ng { background: var(--ng-bg); } .mid { background: var(--mid-bg); }
+  .mark-ok { color: var(--c); font-weight: 700; } .mark-ng { color: var(--warn); font-weight: 700; } .mark-mid { color: var(--b); font-weight: 700; }
+  .rec { border: 2px solid var(--c); border-radius: 8px; padding: 12px 16px; background: var(--ok-bg); margin: 10px 0; }
+  .ask { border: 2px solid var(--b); border-radius: 8px; padding: 12px 16px; background: var(--mid-bg); margin: 14px 0; }
+  .ask h3 { margin: 0 0 6px; }
+  ul.tight, ol.tight { margin: 6px 0; padding-left: 22px; }
+  ul.tight li, ol.tight li { margin: 3px 0; }
+  .st { display: inline-block; font-size: 13px; font-weight: 700; color: #fff; border-radius: 4px; padding: 0 8px; white-space: nowrap; }
+  .st.s10 { background: var(--s10); } .st.s20 { background: var(--s20); } .st.s21 { background: var(--s21); }
+  .st.s30 { background: var(--s30); } .st.s31 { background: var(--s31); }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 4px; padding: 0 6px; border: 1px solid; white-space: nowrap; }
+  .badge.new { color: var(--brand); border-color: var(--brand); }
+  .badge.chg { color: var(--b); border-color: var(--b); }
+  .badge.cur { color: var(--sub); border-color: #bbb; }
+  .rules { counter-reset: r; list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rules li { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; background: #fbfbfd; font-size: 14px; }
+  .rules li::before { counter-increment: r; content: "ルール" counter(r); display: block; font-size: 12px; font-weight: 700; color: var(--brand); }
+  .diagram { border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: #fff; margin: 12px 0 18px; overflow-x: auto; }
+  .diagram .mermaid { min-width: 640px; text-align: center; }
+  .toc { border: 1px solid var(--line); border-radius: 8px; padding: 10px 18px; background: #fbfbfd; font-size: 14px; }
+  .toc ol { margin: 4px 0; padding-left: 22px; }
+  .toc a { color: var(--ink); }
+  code { font-family: Consolas, Menlo, monospace; font-size: 13px; background: #f3f1ec; padding: 0 4px; border-radius: 3px; }
+  @media (max-width: 760px) {
+    .wrap { padding: 20px 14px 48px; }
+    h1 { font-size: 21px; }
+    .rules { grid-template-columns: 1fr; }
+    table { font-size: 13px; }
+    .tbl table { min-width: 640px; }
+  }
+  @media print { body { background: #fff; } .wrap { padding: 0; } h2 { break-after: avoid; } .diagram, .ask, tr { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<header class="doc">
+  <div class="kicker">デジトリ点検 for OLC ／ 施設詳細ステータス（今回開発分）</div>
+  <h1>施設詳細ステータスの仕様について<br>— 状態遷移・操作可否・ご確認事項 —</h1>
+  <div class="meta">2026年10月1日　BAP　バオ（BrSE）</div>
+</header>
+
+<section>
+  <div class="lead">
+    <p>これまでのQ&amp;A（No.102〜133 ほか）および 2026年9月30日のご回答をもとに、<b>施設詳細のステータス仕様</b>を整理いたしました。</p>
+    <p>本資料の内容で問題ないかご確認いただき、特に<b>第6章「ご確認事項」</b>についてご回答をお願いいたします。</p>
+  </div>
+  <p class="note">本資料での呼び方：<b>点検SHOT</b>＝撮影アプリ ／ <b>点検アプリ</b>＝iPad 点検アプリ ／ <b>Web</b>＝Web 管理画面</p>
+
+  <nav class="toc">
+    <ol>
+      <li><a href="#s1">ステータス一覧</a></li>
+      <li><a href="#s2">状態遷移</a></li>
+      <li><a href="#s3">ステータスごとの操作可否</a></li>
+      <li><a href="#s4">各ステータスの詳細フロー</a></li>
+      <li><a href="#s5">運用上の注意点</a></li>
+      <li><a href="#s6">ご確認事項</a></li>
+    </ol>
+  </nav>
+</section>
+
+<h2 id="s1">1. ステータス一覧</h2>
+<p>2026年9月30日にご確認いただいたとおり、<b>「提出済み」は今回の開発対象外</b>（次期開発）とし、以下の5つのステータスとします。</p>
+<div class="tbl">
+<table>
+  <tr><th style="width:36px">#</th><th style="width:170px">ステータス</th><th>意味</th><th style="width:270px">このステータスになる操作</th><th style="width:110px">区分</th></tr>
+  <tr><td class="c">1</td><td><span class="st s10">編集可</span><br><span class="note">旧表示：公開中</span></td><td>撮影・点検のいずれも行われていない状態</td><td>初期状態／撮影・点検の終了後</td><td><span class="badge chg">表示名変更</span></td></tr>
+  <tr><td class="c">2</td><td><span class="st s20">撮影中</span></td><td>点検SHOT でオンライン撮影中</td><td>点検SHOT で「撮影開始」</td><td><span class="badge cur">既存</span></td></tr>
+  <tr><td class="c">3</td><td><span class="st s21">オフライン撮影中</span></td><td>点検SHOT の1台がデータをダウンロードし、オフラインで撮影中</td><td>点検SHOT で「データダウンロード」</td><td><span class="badge new">新規</span></td></tr>
+  <tr><td class="c">4</td><td><span class="st s30">点検中</span></td><td>点検アプリでオンライン点検中</td><td>点検アプリで「オンライン点検」を選択</td><td><span class="badge cur">既存</span></td></tr>
+  <tr><td class="c">5</td><td><span class="st s31">オフライン点検中</span></td><td>点検アプリの1台がデータをダウンロードし、オフラインで点検中</td><td>点検アプリで「オフライン点検」を選択</td><td><span class="badge new">新規</span></td></tr>
+</table>
+</div>
+
+<h2 id="s2">2. 状態遷移</h2>
+<p>状態遷移は、次の3つのルールに基づいています。</p>
+<ol class="rules">
+  <li><b>すべてのステータスは「編集可」から始まり、「編集可」に戻ります。</b></li>
+  <li><b>撮影と点検は直接切り替えできません。</b>一度終了して「編集可」に戻してから、もう一方を開始します。</li>
+  <li><b>オンラインは複数端末で共有、オフラインはダウンロードした端末のみ</b>が操作できます。</li>
+</ol>
+
+<div class="diagram"><pre class="mermaid">
+flowchart LR
+    E(["編集可"])
+
+    subgraph SHOT["📷 点検SHOT"]
+        direction TB
+        S20["撮影中<br/>👥 複数端末で同時撮影可"]
+        S21["オフライン撮影中<br/>🔒 ダウンロードした端末のみ"]
+    end
+
+    subgraph APP["📱 点検アプリ"]
+        direction TB
+        S30["点検中<br/>👥 複数iPadで同時点検可"]
+        S31["オフライン点検中<br/>🔒 ダウンロードした端末のみ"]
+    end
+
+    E -- "① 撮影開始" --> S20
+    S20 -- "② 撮影終了" --> E
+    E -- "③ データダウンロード" --> S21
+    S21 -- "④ 同期／破棄 → 撮影終了" --> E
+
+    E -- "⑤ オンライン点検" --> S30
+    S30 -- "⑥ 点検終了" --> E
+    E -- "⑦ オフライン点検" --> S31
+    S31 -- "⑧ 同期／変更破棄" --> E
+
+    S20 -. "⑨ ⚠️ 要確認" .-> S21
+
+    classDef s10 fill:#f3f4f6,stroke:#6b7280,color:#111;
+    classDef s2x fill:#eff6ff,stroke:#2563eb,color:#111;
+    classDef s3x fill:#ecfdf3,stroke:#2f9a5f,color:#111;
+    class E s10; class S20,S21 s2x; class S30,S31 s3x;
+</pre></div>
+
+<h3>2.1 可能な遷移</h3>
+<div class="tbl">
+<table>
+  <tr><th style="width:36px">#</th><th style="width:150px">遷移前</th><th style="width:150px">遷移後</th><th style="width:170px">操作する端末</th><th>備考</th></tr>
+  <tr><td class="c">①</td><td><span class="st s10">編集可</span></td><td><span class="st s20">撮影中</span></td><td>点検SHOT</td><td>「撮影開始」をタップ</td></tr>
+  <tr><td class="c">②</td><td><span class="st s20">撮影中</span></td><td><span class="st s10">編集可</span></td><td>点検SHOT（<b>どの端末からでも可</b>）</td><td>⚠️ ほかの端末に未同期データが残っている場合、その端末の同期がエラーになります（第5章 参照）</td></tr>
+  <tr><td class="c">③</td><td><span class="st s10">編集可</span></td><td><span class="st s21">オフライン撮影中</span></td><td>点検SHOT</td><td>「データダウンロード」をタップし、ダウンロードが成功した時点で切り替わります</td></tr>
+  <tr><td class="c">④</td><td><span class="st s21">オフライン撮影中</span></td><td><span class="st s10">編集可</span></td><td><b>ダウンロードした端末のみ</b></td><td>「データ同期」または「変更破棄」のあと「撮影終了」。ダウンロードのみで撮影しなかった場合は、詳細画面で「撮影終了」を手動でタップします</td></tr>
+  <tr><td class="c">⑤</td><td><span class="st s10">編集可</span></td><td><span class="st s30">点検中</span></td><td>点検アプリ</td><td>「オンライン点検」を選択</td></tr>
+  <tr><td class="c">⑥</td><td><span class="st s30">点検中</span></td><td><span class="st s10">編集可</span></td><td>点検アプリ</td><td>点検終了</td></tr>
+  <tr><td class="c">⑦</td><td><span class="st s10">編集可</span></td><td><span class="st s31">オフライン点検中</span></td><td>点検アプリ</td><td>「オフライン点検」を選択し、ダウンロードが成功した時点で切り替わります</td></tr>
+  <tr><td class="c">⑧</td><td><span class="st s31">オフライン点検中</span></td><td><span class="st s10">編集可</span></td><td><b>ダウンロードした端末のみ</b></td><td>「データ同期」または「変更破棄」</td></tr>
+  <tr class="mid"><td class="c">⑨</td><td><span class="st s20">撮影中</span></td><td><span class="st s21">オフライン撮影中</span></td><td>点検SHOT</td><td><b>⚠️ 未確定（第6章 ご確認事項1）</b></td></tr>
+</table>
+</div>
+<p class="note">※ 撮影中に2台目の点検SHOTが撮影に加わる場合や、点検中に2台目の iPad が点検に加わる場合は、ステータスは変わりません（第3章 参照）。</p>
+
+<h3>2.2 できない遷移</h3>
+<div class="tbl">
+<table>
+  <tr><th style="width:160px">現在のステータス</th><th style="width:300px">遷移できないステータス</th><th>理由・根拠</th></tr>
+  <tr><td><span class="st s20">撮影中</span></td><td>点検中 ・ オフライン点検中</td><td>撮影中は点検できません</td></tr>
+  <tr><td><span class="st s21">オフライン撮影中</span></td><td>撮影中 ・ 点検中 ・ オフライン点検中<br><span class="note">（「編集可」へのみ戻れます）</span></td><td>ダウンロードした端末のみ操作できるため（2026/09/30 ご回答）</td></tr>
+  <tr><td><span class="st s30">点検中</span></td><td>撮影中 ・ オフライン撮影中</td><td>点検中は点検SHOTで施設を選択できません（No.133）</td></tr>
+  <tr><td><span class="st s30">点検中</span></td><td>オフライン点検中</td><td>オンライン点検中はオフライン点検を開始できません（No.113）</td></tr>
+  <tr><td><span class="st s31">オフライン点検中</span></td><td>撮影中 ・ オフライン撮影中 ・ 点検中<br><span class="note">（「編集可」へのみ戻れます）</span></td><td>ダウンロードした端末のみ操作できるため（No.113、120）</td></tr>
+</table>
+</div>
+
+<h2 id="s3">3. ステータスごとの操作可否</h2>
+<p>「ほかの端末」とは、施設を現在のステータスにした端末<b>以外</b>の端末を指します。</p>
+<div class="tbl">
+<table>
+  <tr><th style="width:160px">ステータス</th><th style="width:110px">🌐 Web</th><th>📷 点検SHOT（ほかの端末）</th><th>📱 点検アプリ（ほかの端末）</th><th style="width:120px">根拠</th></tr>
+  <tr><td><span class="st s10">編集可</span></td><td class="ok">✏️ 閲覧・編集</td><td class="ok">▶️ オンライン撮影開始、またはデータダウンロード（オフライン撮影）</td><td class="ok">▶️ オンライン点検／オフライン点検を開始</td><td>–</td></tr>
+  <tr><td><span class="st s20">撮影中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ok">▶️ <b>オンラインで同時撮影可</b>（後から同期したデータで上書き）</td><td class="ng">⛔ 開始不可</td><td>No.113、133</td></tr>
+  <tr><td><span class="st s21">オフライン撮影中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 撮影・ダウンロード不可（ダウンロードした端末のみ）</td><td class="ng">⛔ 開始不可</td><td>2026/09/30 ご回答</td></tr>
+  <tr><td><span class="st s30">点検中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 施設選択不可</td><td class="ok">▶️ <b>オンラインで同時点検可</b>（リアルタイム共有）<br><span class="mark-ng">⛔ オフライン点検は開始不可</span></td><td>No.102、113、133</td></tr>
+  <tr><td><span class="st s31">オフライン点検中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 施設選択不可</td><td class="ng">⛔ 開始不可（ダウンロードした端末のみ）</td><td>No.113、116、120、125</td></tr>
+</table>
+</div>
+<div class="rec">
+  <b>まとめ</b>
+  <ul class="tight">
+    <li><b>Web で編集できるのは「編集可」のときのみ</b>です。それ以外のステータスでは、Web は閲覧のみとなります。</li>
+    <li><b>オンラインは共有</b>：同じ種類の端末であれば複数台で同時に作業できます。<b>オフラインは専有</b>：ダウンロードした端末のみ操作できます。</li>
+    <li>同じ施設で<b>撮影と点検を同時に行うことはできません</b>。</li>
+  </ul>
+</div>
+
+<h2 id="s4">4. 各ステータスの詳細フロー</h2>
+
+<h3>4.1 オンライン撮影 — <span class="st s20">撮影中</span>（No.113）</h3>
+<ul class="tight">
+  <li>複数台の点検SHOTで同じ施設を同時に撮影できます。</li>
+  <li>後から同期した端末のデータで上書きされます（Last Update Wins）。</li>
+  <li>運用ルール：<b>同じフロアを複数端末で撮影しない</b>ようにしてください。</li>
+</ul>
+<div class="diagram"><pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as 📷 点検SHOT（端末A）
+    participant B as 📷 点検SHOT（端末B）
+    participant K as 📱 点検アプリ
+    participant S as ☁️ サーバー
+    participant W as 🌐 Web
+
+    A->>S: 撮影開始
+    S-->>A: OK・編集可 → 撮影中
+    W->>S: 施設を開く
+    S-->>W: 閲覧のみ（編集ボタン非表示）
+    K->>S: 点検開始
+    S-->>K: ⛔ 拒否（撮影中のため）
+    B->>S: 撮影開始
+    S-->>B: OK・撮影中のまま（同時撮影）
+    A->>S: データ同期（1F）
+    B->>S: データ同期（1F）
+    Note over S: 端末Bのデータで上書き<br/>（Last Update Wins）
+    A->>S: 撮影終了
+    S-->>A: OK・撮影中 → 編集可
+    Note over B,S: ⚠️ 端末Bに未同期データが残っている場合、次回の同期はエラー
+</pre></div>
+
+<h3>4.2 オフライン撮影 — <span class="st s21">オフライン撮影中</span>（No.133）</h3>
+<ul class="tight">
+  <li>点検SHOTに次の2つのボタンを設けます。
+    <ul class="tight">
+      <li><b>撮影開始</b>：現行どおり</li>
+      <li><b>データダウンロード</b>：新規</li>
+    </ul>
+  </li>
+  <li>ダウンロードが成功すると、ステータスが自動で「オフライン撮影中」に切り替わります。ダウンロード後にほかの端末からデータが変更されないようにするためです。</li>
+  <li>操作できるのはダウンロードした端末のみです。ほかの端末と Web は閲覧のみとなります。</li>
+  <li>ダウンロードのみで撮影しなかった場合は、詳細画面で<b>「撮影終了」を手動でタップ</b>して「編集可」に戻します。</li>
+  <li>⚠️ 撮影中の施設でデータダウンロードを許可するかは未確定です（第6章 ご確認事項1）。</li>
+</ul>
+<div class="diagram"><pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as 📷 点検SHOT（端末A）
+    participant B as 📷 点検SHOT（端末B）
+    participant K as 📱 点検アプリ
+    participant S as ☁️ サーバー
+    participant W as 🌐 Web
+
+    Note over A: 通信環境の良い場所で
+    A->>S: データダウンロード
+    S-->>A: 施設データ・編集可 → オフライン撮影中・端末Aを記録
+    B->>S: 撮影開始／データダウンロード
+    S-->>B: ⛔ 拒否（ほかの端末がオフライン撮影中）
+    K->>S: 点検開始
+    S-->>K: ⛔ 拒否
+    W->>S: 施設を開く
+    S-->>W: 閲覧のみ
+    Note over A: 現場（通信なし）<br/>撮影して端末内に保存
+    Note over A: 通信環境の良い場所に戻る
+    alt データ同期
+        A->>S: 撮影データを送信
+        S-->>A: OK（エラー時はリトライ）
+    else 変更破棄
+        A->>A: 端末内のデータを削除
+    end
+    A->>S: 撮影終了
+    S-->>A: OK・オフライン撮影中 → 編集可
+</pre></div>
+
+<h3>4.3 オンライン点検 — <span class="st s30">点検中</span>（No.102、113）</h3>
+<ul class="tight">
+  <li>「点検を開始する」モーダルで「オンライン点検」を選択します。</li>
+  <li>複数台の iPad で同時に点検でき、結果はリアルタイムで共有されます（現行どおり）。</li>
+  <li><b>点検アプリの画面は自動更新されないため、「リロード」ボタンを追加</b>し、最新データを取得できるようにします。</li>
+  <li>Web は閲覧のみとなります。</li>
+  <li>点検中は<b>オフライン点検を開始できず</b>、点検SHOTでも施設を選択できません。</li>
+</ul>
+<div class="diagram"><pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as 📱 点検アプリ（iPad A）
+    participant B as 📱 点検アプリ（iPad B）
+    participant C as 📷 点検SHOT
+    participant S as ☁️ サーバー
+    participant W as 🌐 Web
+
+    A->>S: 点検を開始する → オンライン点検
+    S-->>A: OK・編集可 → 点検中
+    B->>S: 点検を開始する → オンライン点検
+    S-->>B: OK・点検中のまま（同時点検）
+    B->>S: 点検を開始する → オフライン点検
+    S-->>B: ⛔ 拒否（オンライン点検中のため）
+    C->>S: 撮影開始／データダウンロード
+    S-->>C: ⛔ 拒否（点検中のため）
+    W->>S: 施設を開く
+    S-->>W: 閲覧のみ
+    A->>S: 点検結果を保存：OK → NG
+    Note over S: 即時保存（リアルタイム）
+    B->>S: 「リロード」をタップ
+    S-->>B: 最新データ（NGを表示）
+    A->>S: 点検終了
+    S-->>A: OK・点検中 → 編集可
+</pre></div>
+
+<h3>4.4 オフライン点検 — <span class="st s31">オフライン点検中</span>（No.103〜127）</h3>
+<div class="diagram"><pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as 📱 点検アプリ（iPad A）
+    participant B as 📱 点検アプリ（iPad B）
+    participant C as 📷 点検SHOT
+    participant S as ☁️ サーバー
+    participant W as 🌐 Web
+
+    Note over A: ① 通信環境の良い場所で
+    A->>S: 点検を開始する → オフライン点検
+    S-->>A: 施設の全データ・編集可 → オフライン点検中・iPad Aを記録
+    Note over A: ② 施設X、Y、Z…についても繰り返す
+    B->>S: 点検開始
+    S-->>B: ⛔ 拒否（ほかの端末がオフライン点検中）
+    C->>S: 撮影開始／データダウンロード
+    S-->>C: ⛔ 拒否
+    W->>S: 施設を開く
+    S-->>W: 閲覧のみ
+    Note over A: ③④ 現場（通信なし）<br/>端末内のデータで点検<br/>ダウンロード済みの施設間を切り替え可<br/>アプリ終了・電源OFFでもデータは保持
+    Note over A: ⑤ 通信環境の良い場所に戻り、施設ごとに操作
+    alt データ同期
+        A->>S: 変更部分のみ送信（上書き）
+        S-->>A: OK（エラー時はリトライ）
+    else 変更破棄
+        A->>A: 端末内のデータを削除
+    end
+    A->>S: オフライン点検終了
+    S-->>A: OK・オフライン点検中 → 編集可
+</pre></div>
+
+<div class="tbl">
+<table>
+  <tr><th style="width:180px">項目</th><th>仕様</th><th style="width:130px">根拠</th></tr>
+  <tr><td>オフラインへの切り替え</td><td>「点検を開始する」モーダルでユーザーが選択します。<b>通信状態による自動切り替えは行わず</b>、点検の途中でオンライン⇔オフラインを切り替えることもできません</td><td>No.103、112</td></tr>
+  <tr><td>ダウンロード対象</td><td>施設全体：施設情報、360写真、図形、点検情報、付箋、添付写真</td><td>No.115</td></tr>
+  <tr><td>ロック</td><td>ダウンロードした端末のみ操作できます。ほかの端末（アプリ・Web）では編集できないため、競合は発生せず、ダウンロード済みデータの再取得も不要です</td><td>No.116、120、125</td></tr>
+  <tr><td>複数施設</td><td>複数の施設を事前にダウンロードし、オフライン中に切り替えて点検できます（<b>未同期データが残っていても切り替え可</b>）</td><td>No.117、118</td></tr>
+  <tr><td>未ダウンロードの施設</td><td>オフライン点検はできません</td><td>No.119</td></tr>
+  <tr><td>通信なし時の一覧</td><td>ダウンロード済みの施設を表示します</td><td>No.127</td></tr>
+  <tr><td>同期</td><td><b>手動</b>・施設単位：施設を開いて「データ同期」をタップします。変更部分のみを上書きで送信します</td><td>No.105、107、124</td></tr>
+  <tr><td>終了方法</td><td>点検SHOTと同様に「データ同期」または「変更破棄」を選択します</td><td>No.105</td></tr>
+  <tr><td>同期エラー</td><td>点検SHOTと同様のリトライ機能を設けます</td><td>2026/09/17</td></tr>
+  <tr><td>データ保持</td><td>未同期データは、アプリ終了・電源OFF後も保持されます</td><td>2026/09/17</td></tr>
+  <tr><td>端末の故障・紛失</td><td><b>強制解除機能は設けません。</b>運用で対応し、どうしても解除できない場合は弊社にてデータを直接修正します（オフライン撮影中も同様）</td><td>–</td></tr>
+</table>
+</div>
+
+<h3>4.5 用語（2026/09/17 確定）</h3>
+<div class="tbl">
+<table>
+  <tr><th style="width:200px">用語</th><th>意味</th></tr>
+  <tr><td>更新／再読込</td><td>サーバーから最新の情報を取得すること（リロード）</td></tr>
+  <tr><td>同期</td><td>端末内のデータをサーバーへ送信すること</td></tr>
+</table>
+</div>
+
+<h2 id="s5">5. 運用上の注意点</h2>
+<p>上記の仕様を実現するにあたり、以下の点にご留意ください。</p>
+<div class="tbl">
+<table>
+  <tr><th style="width:36px">#</th><th style="width:220px">項目</th><th>内容</th></tr>
+  <tr><td class="c">1</td><td>Web の閲覧のみ制御</td><td>「編集可」以外のステータスでは、Web からのすべての編集操作（ポイント・フロア・フォルダ・ファイル・図形・施設情報）を不可とし、制御を統一します。</td></tr>
+  <tr><td class="c">2</td><td>Web 画面のステータス表示</td><td>Web 画面はステータスを自動更新しません。「編集可」で画面を開いた後にアプリ側で撮影・点検が開始された場合、編集ボタンが表示されたままになることがありますが、<b>保存時にサーバー側で拒否し、エラーメッセージを表示</b>します。</td></tr>
+  <tr><td class="c">3</td><td>同時操作</td><td>2台の端末で同時に撮影開始・ダウンロード等を行った場合、<b>先に処理された1台のみ成功</b>し、もう1台はエラーとなります。</td></tr>
+  <tr><td class="c">4</td><td>撮影中の「撮影終了」</td><td>撮影中はどの端末からでも「撮影終了」できます。ほかの端末に未同期データが残っている場合、その端末の同期はエラーになります（第6章 ご確認事項2）。</td></tr>
+  <tr><td class="c">5</td><td>端末の識別</td><td>同じアカウントで複数の端末にログインしている場合でも、オフライン撮影・オフライン点検は<b>端末単位</b>で専有を判定します。</td></tr>
+</table>
+</div>
+
+<h2 id="s6">6. ご確認事項</h2>
+<p>以下の点について、ご回答をお願いいたします。</p>
+
+<div class="ask">
+  <h3>ご確認事項1：撮影中の施設で「データダウンロード」を許可するか（遷移⑨）</h3>
+  <p>No.133 のご回答では、撮影中でもデータダウンロードが可能と読み取れます。ただし、端末Aがダウンロードすると施設は端末A専有の「オフライン撮影中」となり、<b>オンラインで撮影中の端末Bは同期できなくなります</b>。</p>
+  <div class="rec" style="margin-bottom:0"><b>弊社提案：</b>データダウンロードは<b>「編集可」のときのみ</b>許可し、撮影中は不可とする。</div>
+</div>
+
+<div class="ask">
+  <h3>ご確認事項2：「撮影終了」時の確認メッセージ追加</h3>
+  <p>撮影中は、どの端末からでも「撮影終了」できます。ほかの端末に未同期データが残っていると、その端末の同期がエラーになります。</p>
+  <div class="rec" style="margin-bottom:0"><b>弊社提案：</b>「撮影終了」をタップした際に、<b>「ほかの端末で撮影中の場合、未同期データが同期できなくなります。終了してよろしいですか？」</b>といった確認メッセージを表示する。</div>
+</div>
+
+<div class="ask">
+  <h3>ご確認事項3：端末の故障・紛失時の対応（認識合わせ）</h3>
+  <p>オフライン撮影中／オフライン点検中の端末が故障・紛失した場合、<b>強制解除機能は設けず</b>、運用で対応する方針です（弊社にてデータを直接修正）。この方針でよろしいでしょうか。</p>
+</div>
+
+<p class="note" style="margin-top:32px">以上、ご確認のほどよろしくお願いいたします。</p>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true, theme: "neutral", securityLevel: "loose",
+    fontFamily: '"Hiragino Sans","Yu Gothic","Meiryo",sans-serif',
+    flowchart: { htmlLabels: true, curve: "basis" },
+    sequence: { mirrorActors: false, wrap: false, actorMargin: 30 }
+  });
+</script>
+</body>
+</html>
