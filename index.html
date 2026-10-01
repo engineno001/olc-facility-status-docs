@@ -71,14 +71,14 @@
 
 <header class="doc">
   <div class="kicker">デジトリ点検 for OLC ／ 施設詳細ステータス（今回開発分）</div>
-  <h1>施設詳細ステータスの仕様について<br>— 状態遷移・操作可否・ご確認事項 —</h1>
+  <h1>施設詳細ステータスの仕様について<br>— 状態遷移・操作可否 —</h1>
   <div class="meta">2026年10月1日　BAP　バオ（BrSE）</div>
 </header>
 
 <section>
   <div class="lead">
     <p>これまでのQ&amp;A（No.102〜133 ほか）および 2026年9月30日のご回答をもとに、<b>施設詳細のステータス仕様</b>を整理いたしました。</p>
-    <p>本資料の内容で問題ないかご確認いただき、特に<b>第6章「ご確認事項」</b>についてご回答をお願いいたします。</p>
+    <p>内容をご確認いただき、修正が必要な点がございましたらご連絡ください。</p>
   </div>
   <p class="note">本資料での呼び方：<b>点検SHOT</b>＝撮影アプリ ／ <b>点検アプリ</b>＝iPad 点検アプリ ／ <b>Web</b>＝Web 管理画面</p>
 
@@ -89,7 +89,6 @@
       <li><a href="#s3">ステータスごとの操作可否</a></li>
       <li><a href="#s4">各ステータスの詳細フロー</a></li>
       <li><a href="#s5">運用上の注意点</a></li>
-      <li><a href="#s6">ご確認事項</a></li>
     </ol>
   </nav>
 </section>
@@ -141,7 +140,6 @@ flowchart LR
     E -- "⑦ オフライン点検" --> S31
     S31 -- "⑧ 同期／変更破棄" --> E
 
-    S20 -. "⑨ ⚠️ 要確認" .-> S21
 
     classDef s10 fill:#f3f4f6,stroke:#6b7280,color:#111;
     classDef s2x fill:#eff6ff,stroke:#2563eb,color:#111;
@@ -154,14 +152,13 @@ flowchart LR
 <table>
   <tr><th style="width:36px">#</th><th style="width:150px">遷移前</th><th style="width:150px">遷移後</th><th style="width:170px">操作する端末</th><th>備考</th></tr>
   <tr><td class="c">①</td><td><span class="st s10">編集可</span></td><td><span class="st s20">撮影中</span></td><td>点検SHOT</td><td>「撮影開始」をタップ</td></tr>
-  <tr><td class="c">②</td><td><span class="st s20">撮影中</span></td><td><span class="st s10">編集可</span></td><td>点検SHOT（<b>どの端末からでも可</b>）</td><td>⚠️ ほかの端末に未同期データが残っている場合、その端末の同期がエラーになります（第5章 参照）</td></tr>
+  <tr><td class="c">②</td><td><span class="st s20">撮影中</span></td><td><span class="st s10">編集可</span></td><td>点検SHOT（<b>どの端末からでも可</b>）</td><td>⚠️ ほかの端末に未同期データが残っている場合、その端末の同期がエラーになります。「撮影終了」をタップした際に確認メッセージを表示します（第5章 参照）</td></tr>
   <tr><td class="c">③</td><td><span class="st s10">編集可</span></td><td><span class="st s21">オフライン撮影中</span></td><td>点検SHOT</td><td>「データダウンロード」をタップし、ダウンロードが成功した時点で切り替わります</td></tr>
   <tr><td class="c">④</td><td><span class="st s21">オフライン撮影中</span></td><td><span class="st s10">編集可</span></td><td><b>ダウンロードした端末のみ</b></td><td>「データ同期」または「変更破棄」のあと「撮影終了」。ダウンロードのみで撮影しなかった場合は、詳細画面で「撮影終了」を手動でタップします</td></tr>
   <tr><td class="c">⑤</td><td><span class="st s10">編集可</span></td><td><span class="st s30">点検中</span></td><td>点検アプリ</td><td>「オンライン点検」を選択</td></tr>
   <tr><td class="c">⑥</td><td><span class="st s30">点検中</span></td><td><span class="st s10">編集可</span></td><td>点検アプリ</td><td>点検終了</td></tr>
   <tr><td class="c">⑦</td><td><span class="st s10">編集可</span></td><td><span class="st s31">オフライン点検中</span></td><td>点検アプリ</td><td>「オフライン点検」を選択し、ダウンロードが成功した時点で切り替わります</td></tr>
   <tr><td class="c">⑧</td><td><span class="st s31">オフライン点検中</span></td><td><span class="st s10">編集可</span></td><td><b>ダウンロードした端末のみ</b></td><td>「データ同期」または「変更破棄」</td></tr>
-  <tr class="mid"><td class="c">⑨</td><td><span class="st s20">撮影中</span></td><td><span class="st s21">オフライン撮影中</span></td><td>点検SHOT</td><td><b>⚠️ 未確定（第6章 ご確認事項1）</b></td></tr>
 </table>
 </div>
 <p class="note">※ 撮影中に2台目の点検SHOTが撮影に加わる場合や、点検中に2台目の iPad が点検に加わる場合は、ステータスは変わりません（第3章 参照）。</p>
@@ -170,6 +167,7 @@ flowchart LR
 <div class="tbl">
 <table>
   <tr><th style="width:160px">現在のステータス</th><th style="width:300px">遷移できないステータス</th><th>理由・根拠</th></tr>
+  <tr><td><span class="st s20">撮影中</span></td><td>オフライン撮影中</td><td>オンライン撮影中はオフライン撮影（データダウンロード）を開始できません</td></tr>
   <tr><td><span class="st s20">撮影中</span></td><td>点検中 ・ オフライン点検中</td><td>撮影中は点検できません</td></tr>
   <tr><td><span class="st s21">オフライン撮影中</span></td><td>撮影中 ・ 点検中 ・ オフライン点検中<br><span class="note">（「編集可」へのみ戻れます）</span></td><td>ダウンロードした端末のみ操作できるため（2026/09/30 ご回答）</td></tr>
   <tr><td><span class="st s30">点検中</span></td><td>撮影中 ・ オフライン撮影中</td><td>点検中は点検SHOTで施設を選択できません（No.133）</td></tr>
@@ -184,7 +182,7 @@ flowchart LR
 <table>
   <tr><th style="width:160px">ステータス</th><th style="width:110px">🌐 Web</th><th>📷 点検SHOT（ほかの端末）</th><th>📱 点検アプリ（ほかの端末）</th><th style="width:120px">根拠</th></tr>
   <tr><td><span class="st s10">編集可</span></td><td class="ok">✏️ 閲覧・編集</td><td class="ok">▶️ オンライン撮影開始、またはデータダウンロード（オフライン撮影）</td><td class="ok">▶️ オンライン点検／オフライン点検を開始</td><td>–</td></tr>
-  <tr><td><span class="st s20">撮影中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ok">▶️ <b>オンラインで同時撮影可</b>（後から同期したデータで上書き）<br><span class="mark-ng">⛔ オフライン撮影（データダウンロード）は開始不可</span> <span class="note">※ご確認事項1</span></td><td class="ng">⛔ 開始不可</td><td>No.113、133</td></tr>
+  <tr><td><span class="st s20">撮影中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ok">▶️ <b>オンラインで同時撮影可</b>（後から同期したデータで上書き）<br><span class="mark-ng">⛔ オフライン撮影（データダウンロード）は開始不可</span></td><td class="ng">⛔ 開始不可</td><td>No.113、133</td></tr>
   <tr><td><span class="st s21">オフライン撮影中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 撮影・ダウンロード不可（ダウンロードした端末のみ）</td><td class="ng">⛔ 開始不可</td><td>2026/09/30 ご回答</td></tr>
   <tr><td><span class="st s30">点検中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 施設選択不可</td><td class="ok">▶️ <b>オンラインで同時点検可</b>（リアルタイム共有）<br><span class="mark-ng">⛔ オフライン点検（データダウンロード）は開始不可</span></td><td>No.102、113、133</td></tr>
   <tr><td><span class="st s31">オフライン点検中</span></td><td class="mid">👁️ 閲覧のみ</td><td class="ng">⛔ 施設選択不可</td><td class="ng">⛔ 開始不可（ダウンロードした端末のみ）</td><td>No.113、116、120、125</td></tr>
@@ -224,9 +222,12 @@ sequenceDiagram
     S-->>K: ⛔ 拒否（撮影中のため）
     B->>S: 撮影開始
     S-->>B: OK・撮影中のまま（同時撮影）
+    B->>S: データダウンロード（オフライン撮影）
+    S-->>B: ⛔ 拒否（オンライン撮影中のため）
     A->>S: データ同期（1F）
     B->>S: データ同期（1F）
     Note over S: 端末Bのデータで上書き<br/>（Last Update Wins）
+    Note over A: 撮影終了をタップ → 確認メッセージ
     A->>S: 撮影終了
     S-->>A: OK・撮影中 → 編集可
     Note over B,S: ⚠️ 端末Bに未同期データが残っている場合、次回の同期はエラー
@@ -243,7 +244,7 @@ sequenceDiagram
   <li>ダウンロードが成功すると、ステータスが自動で「オフライン撮影中」に切り替わります。ダウンロード後にほかの端末からデータが変更されないようにするためです。</li>
   <li>操作できるのはダウンロードした端末のみです。ほかの端末と Web は閲覧のみとなります。</li>
   <li>ダウンロードのみで撮影しなかった場合は、詳細画面で<b>「撮影終了」を手動でタップ</b>して「編集可」に戻します。</li>
-  <li>⚠️ 撮影中の施設でデータダウンロードを許可するかは未確定です（第6章 ご確認事項1）。</li>
+  <li>データダウンロードは<b>「編集可」のときのみ</b>可能です。撮影中（オンライン撮影中）の施設ではダウンロードできません。</li>
 </ul>
 <div class="diagram"><pre class="mermaid">
 sequenceDiagram
@@ -376,29 +377,9 @@ sequenceDiagram
   <tr><td class="c">1</td><td>Web の閲覧のみ制御</td><td>「編集可」以外のステータスでは、Web からのすべての編集操作（ポイント・フロア・フォルダ・ファイル・図形・施設情報）を不可とし、制御を統一します。</td></tr>
   <tr><td class="c">2</td><td>Web 画面のステータス表示</td><td>Web 画面はステータスを自動更新しません。「編集可」で画面を開いた後にアプリ側で撮影・点検が開始された場合、編集ボタンが表示されたままになることがありますが、<b>保存時にサーバー側で拒否し、エラーメッセージを表示</b>します。</td></tr>
   <tr><td class="c">3</td><td>同時操作</td><td>2台の端末で同時に撮影開始・ダウンロード等を行った場合、<b>先に処理された1台のみ成功</b>し、もう1台はエラーとなります。</td></tr>
-  <tr><td class="c">4</td><td>撮影中の「撮影終了」</td><td>撮影中はどの端末からでも「撮影終了」できます。ほかの端末に未同期データが残っている場合、その端末の同期はエラーになります（第6章 ご確認事項2）。</td></tr>
+  <tr><td class="c">4</td><td>撮影中の「撮影終了」</td><td>撮影中はどの端末からでも「撮影終了」できます。ほかの端末に未同期データが残っている場合、その端末の同期はエラーになるため、「撮影終了」をタップした際に<b>「ほかの端末で撮影中の場合、未同期データが同期できなくなります。終了してよろしいですか？」</b>といった確認メッセージを表示します。</td></tr>
   <tr><td class="c">5</td><td>端末の識別</td><td>同じアカウントで複数の端末にログインしている場合でも、オフライン撮影・オフライン点検は<b>端末単位</b>で専有を判定します。</td></tr>
 </table>
-</div>
-
-<h2 id="s6">6. ご確認事項</h2>
-<p>以下の点について、ご回答をお願いいたします。</p>
-
-<div class="ask">
-  <h3>ご確認事項1：撮影中の施設で「データダウンロード」を許可するか（遷移⑨）</h3>
-  <p>No.133 のご回答では、撮影中でもデータダウンロードが可能と読み取れます。ただし、端末Aがダウンロードすると施設は端末A専有の「オフライン撮影中」となり、<b>オンラインで撮影中の端末Bは同期できなくなります</b>。</p>
-  <div class="rec" style="margin-bottom:0"><b>弊社提案：</b>データダウンロードは<b>「編集可」のときのみ</b>許可し、撮影中は不可とする。</div>
-</div>
-
-<div class="ask">
-  <h3>ご確認事項2：「撮影終了」時の確認メッセージ追加</h3>
-  <p>撮影中は、どの端末からでも「撮影終了」できます。ほかの端末に未同期データが残っていると、その端末の同期がエラーになります。</p>
-  <div class="rec" style="margin-bottom:0"><b>弊社提案：</b>「撮影終了」をタップした際に、<b>「ほかの端末で撮影中の場合、未同期データが同期できなくなります。終了してよろしいですか？」</b>といった確認メッセージを表示する。</div>
-</div>
-
-<div class="ask">
-  <h3>ご確認事項3：端末の故障・紛失時の対応（認識合わせ）</h3>
-  <p>オフライン撮影中／オフライン点検中の端末が故障・紛失した場合、<b>強制解除機能は設けず</b>、運用で対応する方針です（弊社にてデータを直接修正）。この方針でよろしいでしょうか。</p>
 </div>
 
 <p class="note" style="margin-top:32px">以上、ご確認のほどよろしくお願いいたします。</p>
